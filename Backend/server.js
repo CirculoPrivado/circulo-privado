@@ -16,9 +16,9 @@ const comprasRoutes = require("./routes/comprasRoutes");
 const webhookRoutes = require("./routes/webhookRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 const comunidadRoutes = require("./routes/comunidadRoutes");
-const ensureSchema = require("./config/ensureSchema");
+//const ensureSchema = require("./config/ensureSchema");
 
-ensureSchema();
+//ensureSchema();
 
 const app = express();
 
