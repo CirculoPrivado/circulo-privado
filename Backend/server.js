@@ -16,34 +16,87 @@ const comprasRoutes = require("./routes/comprasRoutes");
 const webhookRoutes = require("./routes/webhookRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 const comunidadRoutes = require("./routes/comunidadRoutes");
-//const ensureSchema = require("./config/ensureSchema");
 
-//ensureSchema();
+// Se deja desactivado porque usa sintaxis incompatible con MySQL de Railway.
+// const ensureSchema = require("./config/ensureSchema");
+// ensureSchema();
 
 const app = express();
 
+/* =========================================================
+   CONFIGURACIÓN DE CORS
+========================================================= */
+
 const allowedOrigins = [
   "http://localhost:5173",
+  "https://circulo-privado.vercel.app",
   process.env.FRONTEND_URL,
 ].filter(Boolean);
 
-app.use(
-  cors({
-    origin(origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
+const corsOptions = {
+  origin(origin, callback) {
+    // Permite herramientas sin origen, como Postman y health checks.
+    if (!origin) {
+      return callback(null, true);
+    }
 
-      return callback(new Error("Origen no autorizado por CORS"));
-    },
-    credentials: true,
-  })
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    console.error("Origen bloqueado por CORS:", origin);
+
+    return callback(
+      new Error("Origen no autorizado por CORS")
+    );
+  },
+
+  credentials: true,
+
+  methods: [
+    "GET",
+    "POST",
+    "PUT",
+    "PATCH",
+    "DELETE",
+    "OPTIONS",
+  ],
+
+  allowedHeaders: [
+    "Content-Type",
+    "Authorization",
+  ],
+};
+
+app.use(cors(corsOptions));
+
+// Responde correctamente a las solicitudes preflight OPTIONS.
+app.options(/.*/, cors(corsOptions));
+
+/* =========================================================
+   MIDDLEWARES
+========================================================= */
+
+// Webhooks
+app.use(
+  "/api/webhooks",
+  express.json(),
+  webhookRoutes
 );
-app.use("/api/webhooks", express.json(), webhookRoutes);
+
+// Lectura de JSON y formularios
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+// Archivos públicos
+app.use(
+  "/uploads",
+  express.static(path.join(__dirname, "uploads"))
+);
+
+/* =========================================================
+   RUTAS DE LA API
+========================================================= */
 
 app.use("/api/auth", authRoutes);
 app.use("/api/incidentes", incidentesRoutes);
@@ -57,6 +110,9 @@ app.use("/api/compras", comprasRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/comunidad", comunidadRoutes);
 
+/* =========================================================
+   RUTAS DE COMPROBACIÓN
+========================================================= */
 
 app.get("/", (req, res) => {
   res.send("API Círculo Privado funcionando 🚀");
@@ -69,8 +125,13 @@ app.get("/api/health", (req, res) => {
   });
 });
 
+/* =========================================================
+   SERVIDOR
+========================================================= */
+
 const PORT = process.env.PORT || 3001;
 
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en puerto ${PORT}`);
+  console.log("Orígenes permitidos por CORS:", allowedOrigins);
 });
