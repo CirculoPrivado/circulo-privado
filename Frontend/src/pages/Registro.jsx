@@ -34,7 +34,10 @@ export default function Registro() {
 
   const enviarFormulario = async (e) => {
     e.preventDefault();
-    const validacionPassword = validarPasswordSegura(formulario.password);
+
+    const validacionPassword = validarPasswordSegura(
+      formulario.password
+    );
 
     if (!validacionPassword.esValida) {
       setTipoMensaje("danger");
@@ -48,38 +51,62 @@ export default function Registro() {
       return;
     }
 
-    if (!formulario.postal_code && !(formulario.street && formulario.city && formulario.state)) {
+    if (
+      !formulario.postal_code &&
+      !(
+        formulario.street &&
+        formulario.city &&
+        formulario.state
+      )
+    ) {
       setTipoMensaje("danger");
-      setMensaje("Ingresa al menos un código postal o una dirección válida.");
+      setMensaje(
+        "Ingresa al menos un código postal o una dirección válida."
+      );
       return;
     }
 
     try {
       const payload = {
-        name: formulario.nombre,
-        email: formulario.email,
+        name: formulario.nombre.trim(),
+        email: formulario.email.trim().toLowerCase(),
         password: formulario.password,
         role: formulario.role,
-        street: formulario.street,
-        ext_number: formulario.ext_number,
-        neighborhood: formulario.neighborhood,
-        city: formulario.city,
-        state: formulario.state,
-        postal_code: formulario.postal_code,
-        country: formulario.country,
+        street: formulario.street.trim(),
+        ext_number: formulario.ext_number.trim(),
+        neighborhood: formulario.neighborhood.trim(),
+        city: formulario.city.trim(),
+        state: formulario.state.trim(),
+        postal_code: formulario.postal_code.trim(),
+        country: formulario.country.trim(),
       };
 
       const respuesta = await registrarUsuario(payload);
+
       setTipoMensaje("success");
       setMensaje(
         respuesta.locationWarning
-          ? `${respuesta.message} ${respuesta.locationWarning}`
-          : respuesta.message || "Registro completado correctamente"
+          ? `Usuario registrado correctamente. ${respuesta.locationWarning}`
+          : respuesta.message ||
+              "Usuario registrado correctamente. Ahora puedes iniciar sesión."
       );
-      setTimeout(() => navigate("/iniciar-sesion"), 1500);
+
+      setFormulario(formularioInicial);
+
+      setTimeout(() => {
+        navigate("/iniciar-sesion", {
+          state: {
+            mensaje:
+              "Usuario registrado correctamente. Inicia sesión con tu correo y contraseña.",
+          },
+        });
+      }, 3000);
     } catch (error) {
       setTipoMensaje("danger");
-      setMensaje(error.response?.data?.message || "No se pudo registrar el usuario");
+      setMensaje(
+        error.response?.data?.message ||
+          "No se pudo registrar el usuario"
+      );
     }
   };
 
@@ -152,7 +179,12 @@ export default function Registro() {
                       <input type="password" className="form-control form-control-lg" name="confirmar" value={formulario.confirmar} onChange={cambiarValor} placeholder="********" required />
                     </div>
                   </div>
-                  <button className="btn btn-primary btn-lg w-100 boton-redondo mt-4">{t("createAccount")}</button>
+                  <button
+                    type="submit"
+                    className="btn btn-primary btn-lg w-100 boton-redondo mt-4"
+                  >
+                    {t("createAccount")}
+                  </button>
                 </form>
                 {mensaje && <div className={`alert alert-${tipoMensaje} mt-4`} role="alert">{mensaje}</div>}
                 <div className="text-center mt-4"><span className="subtitulo">{t("accountExists")} </span><Link to="/iniciar-sesion" className="fw-bold">{t("signInHere")}</Link></div>

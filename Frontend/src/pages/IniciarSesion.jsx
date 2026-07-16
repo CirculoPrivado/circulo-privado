@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import BarraNavegacion from "../components/BarraNavegacion";
 import PiePagina from "../components/PiePagina";
 import { iniciarSesion } from "../services/authService";
@@ -7,6 +7,7 @@ import { useAccessibility } from "../context/AccessibilityContext";
 
 export default function IniciarSesion() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { t } = useAccessibility();
 
   const [formulario, setFormulario] = useState({ email: "", password: "" });
@@ -46,6 +47,12 @@ export default function IniciarSesion() {
                   <h1 className="titulo-principal mb-3">{t("loginAction")}</h1>
                   <p className="subtitulo mb-0">{t("loginSubtitle")}</p>
                 </div>
+
+                {location.state?.mensaje && (
+                  <div className="alert alert-success mb-4" role="alert">
+                    {location.state.mensaje}
+                  </div>
+                )}
 
                 <form onSubmit={enviarFormulario}>
                   <div className="mb-3">
