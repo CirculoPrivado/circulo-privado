@@ -43,7 +43,7 @@ export function AccessibilityProvider({ children }) {
 
     const load = async () => {
       try {
-        const { data } = await api.get('/perfil/preferences');
+        const { data } = await api.get("/perfil/accesibilidad");
         if (cancelled || !data) return;
         const merged = { ...DEFAULTS, ...data };
         setPreferences(merged);
@@ -78,7 +78,7 @@ export function AccessibilityProvider({ children }) {
     if (!token) return;
 
     try {
-      await api.put('/perfil/preferences', nextPreferences);
+      await api.put("/perfil/accesibilidad", nextPreferences);
     } catch {
       setSavingError(translations[nextPreferences.idioma || 'es']?.savePreferencesError || translations.es.savePreferencesError);
     }
