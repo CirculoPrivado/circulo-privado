@@ -1,0 +1,36 @@
+CAMBIOS IMPLEMENTADOS
+
+1. Se cambió la barra superior de navegación por una barra lateral izquierda fija.
+2. Se conservaron las rutas y funcionalidades principales:
+   - Panel
+   - Avisos
+   - Incidentes
+   - Emergencia
+   - Pagos
+   - Mercado
+   - Mi perfil
+   - Asistente IA
+   - Accesibilidad
+   - Cerrar sesión
+3. Se actualizó la paleta visual del sistema con colores turquesa/vecinales:
+   - #0E7490
+   - #14B8C4
+   - #7DD3DC
+   - #E6FFFB
+   - #F9C74F
+   - #274C5E
+4. Se adaptaron los temas de accesibilidad:
+   - Claro
+   - Oscuro
+   - Contraste
+5. Se mejoró el menú de accesibilidad para mostrar los temas como botones seleccionables.
+6. Se cuidó el contraste del texto para que el contenido no se pierda en los tres temas.
+7. Se agregaron estilos responsivos para que la barra lateral se adapte en pantallas pequeñas.
+8. Se verificó el frontend ejecutando npm run build correctamente.
+
+ARCHIVOS MODIFICADOS
+
+Frontend/src/components/BarraNavegacion.jsx
+Frontend/src/components/AccessibilityMenu.jsx
+Frontend/src/index.css
+Frontend/src/styles/estilos.css

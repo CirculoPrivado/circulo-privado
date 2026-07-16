@@ -1,0 +1,12 @@
+PROYECTO CÍRCULO PRIVADO — CARPETA PREPARADA PARA DESPLIEGUE
+
+1. Abre esta carpeta completa en Visual Studio Code.
+2. Para trabajar localmente:
+   - Enciende MySQL en XAMPP.
+   - Terminal 1: cd Backend && npm install && npm run dev
+   - Terminal 2: cd Frontend && npm install && npm run dev
+3. El frontend usa VITE_API_URL y mantiene localhost como respaldo local.
+4. Para Vercel configura VITE_API_URL con la URL de Render terminada en /api.
+5. No subas Backend/.env ni Frontend/.env a GitHub; ya están protegidos por .gitignore.
+6. Se agregó Frontend/vercel.json para evitar errores 404 en rutas de React.
+7. Se agregó /api/health en el backend para comprobar el despliegue.

@@ -1,0 +1,51 @@
+CIRCULO PRIVADO - CONFIGURACION EXTERNA
+
+1) EN BACKEND instala dependencias
+   npm install
+   npm install nodemailer
+
+2) CONFIGURA Backend/.env con tus datos reales
+   Debes definir al menos:
+   - DB_HOST
+   - DB_USER
+   - DB_PASSWORD
+   - DB_NAME
+   - JWT_SECRET
+   - FRONTEND_URL
+
+   Para correo usa UNA de estas opciones:
+   A) SMTP_HOST / SMTP_PORT / SMTP_USER / SMTP_PASS / EMAIL_FROM
+   B) EMAIL_USER / EMAIL_PASS
+
+3) SI USAS GMAIL
+   - Activa la verificacion en dos pasos en tu cuenta Gmail.
+   - Genera una contrasena de aplicacion.
+   - Esa contrasena NO es tu password normal de Gmail.
+   - Usa esa contrasena en SMTP_PASS o EMAIL_PASS.
+
+4) BASE DE DATOS
+   El backend intenta crear automaticamente las columnas:
+   - activo
+   - reset_token
+   - reset_expires
+
+   Si tu version de MySQL no soporta "ADD COLUMN IF NOT EXISTS", ejecuta esto manualmente:
+
+   ALTER TABLE usuarios ADD COLUMN activo TINYINT(1) NOT NULL DEFAULT 1;
+   ALTER TABLE usuarios ADD COLUMN reset_token VARCHAR(255) NULL;
+   ALTER TABLE usuarios ADD COLUMN reset_expires DATETIME NULL;
+   UPDATE usuarios SET activo = 1 WHERE activo IS NULL;
+
+5) URLS IMPORTANTES
+   Frontend local: http://localhost:5173
+   Backend local: http://localhost:3001
+
+6) FLUJO NUEVO QUE YA QUEDO INTEGRADO
+   - Al registrarse un usuario, se intenta enviar correo de bienvenida.
+   - En login ya aparece "¿Olvidaste tu contraseña?".
+   - Esa opcion lleva a /olvide-contrasena.
+   - Se manda correo con enlace a /restablecer-contrasena/:token.
+   - El usuario puede cambiar su password desde ese formulario.
+
+7) RECOMENDACION
+   No subas tu archivo .env ni tus credenciales a GitHub.

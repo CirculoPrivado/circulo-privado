@@ -1,0 +1,26 @@
+CAMBIOS REALIZADOS - COMPROBANTE DE PAGO EN PDF
+
+1. Se reemplazó la descarga anterior en formato TXT por una descarga real en PDF.
+2. Se agregó el archivo Frontend/src/utils/comprobantePagoPdf.js.
+3. El comprobante ahora incluye:
+   - Encabezado institucional de Mi Comunidad.
+   - Folio formal CP-PAGO-000000.
+   - Estado del pago.
+   - Concepto.
+   - Monto en moneda MXN.
+   - Usuario relacionado al pago.
+   - Fecha de vencimiento.
+   - Proveedor o método de pago.
+   - Referencia externa cuando exista.
+   - Fecha de emisión.
+   - Código de verificación.
+   - Cuadro tipo QR visual.
+   - Espacios de firma/sello interno.
+4. No se agregó ninguna dependencia externa, para evitar errores por instalación de librerías.
+5. Se validó el frontend con npm run build correctamente.
+
+Archivo modificado:
+- Frontend/src/pages/Pagos.jsx
+
+Archivo nuevo:
+- Frontend/src/utils/comprobantePagoPdf.js

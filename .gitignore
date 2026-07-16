@@ -1,0 +1,22 @@
+# Dependencias
+node_modules/
+Backend/node_modules/
+Frontend/node_modules/
+
+# Variables privadas
+.env
+Backend/.env
+Frontend/.env
+
+# Compilaciones
+build/
+Backend/dist/
+Frontend/dist/
+Frontend/build/
+
+# Temporales y editores
+*.log
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
