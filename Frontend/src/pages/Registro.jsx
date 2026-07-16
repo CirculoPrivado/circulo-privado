@@ -83,28 +83,34 @@ export default function Registro() {
 
       const respuesta = await registrarUsuario(payload);
 
-      setTipoMensaje("success");
-      setMensaje(
-        respuesta.locationWarning
-          ? `Usuario registrado correctamente. ${respuesta.locationWarning}`
-          : respuesta.message ||
-              "Usuario registrado correctamente. Ahora puedes iniciar sesión."
-      );
+      console.log("Respuesta del registro:", respuesta);
 
+      const mensajeExito =
+        respuesta?.locationWarning
+          ? `Usuario registrado correctamente. ${respuesta.locationWarning}`
+          : respuesta?.message ||
+            "Usuario registrado correctamente. Ahora puedes iniciar sesión.";
+
+      setTipoMensaje("success");
+      setMensaje(mensajeExito);
       setFormulario(formularioInicial);
 
       setTimeout(() => {
         navigate("/iniciar-sesion", {
+          replace: true,
           state: {
             mensaje:
               "Usuario registrado correctamente. Inicia sesión con tu correo y contraseña.",
           },
         });
-      }, 3000);
+      }, 2500);
     } catch (error) {
+      console.error("Error después del registro:", error);
+
       setTipoMensaje("danger");
       setMensaje(
         error.response?.data?.message ||
+          error.message ||
           "No se pudo registrar el usuario"
       );
     }

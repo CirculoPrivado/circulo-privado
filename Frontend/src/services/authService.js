@@ -1,8 +1,8 @@
 import api from "./api";
 
 export const registrarUsuario = async (datos) => {
-  const respuesta = await api.post("/auth/register", datos);
-  return respuesta.data;
+  const response = await api.post("/auth/register", datos);
+  return response.data;
 };
 
 export const iniciarSesion = async (datos) => {
