@@ -1323,3 +1323,133 @@ html[data-theme="contraste"] .app-main, html[data-theme="contraste"] .page-heade
 @media (max-width: 1199.98px) { .kpi-grid, .summary-strip { grid-template-columns:repeat(2,minmax(0,1fr)); } .market-grid { grid-template-columns:repeat(3,minmax(0,1fr)); } }
 @media (max-width: 991.98px) { .app-page-shell { padding-top:1.25rem; } .sidebar-floating-open { top:auto; bottom:18px; } .page-header-card { flex-direction:column; align-items:flex-start; } .market-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } .theme-card-grid { grid-template-columns:1fr; } }
 @media (max-width: 767.98px) { .kpi-grid, .summary-strip, .market-grid { grid-template-columns:1fr; } .quick-grid { grid-template-columns:1fr; } .activity-list a { grid-template-columns:auto 1fr; } .activity-list em { grid-column:2; } .emergency-hero-card { flex-direction:column; text-align:center; } .safe-info-strip { flex-direction:column; align-items:flex-start; } }
+
+/* =========================================================
+   AJUSTE MÓVIL DEL PERFIL
+========================================================= */
+
+@media (max-width: 767.98px) {
+  .profile-page {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  .profile-page .app-page-shell {
+    width: 100%;
+    max-width: 100%;
+    padding: 20px 14px 35px;
+  }
+
+  .profile-page .profile-hero-card {
+    width: 100%;
+    max-width: 100%;
+    padding: 18px !important;
+    overflow: hidden;
+  }
+
+  .profile-page .profile-hero-card > div {
+    width: 100%;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 18px !important;
+  }
+
+  .profile-page .profile-hero-card > div > div:first-child {
+    width: 100%;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 12px !important;
+    text-align: center;
+  }
+
+  .profile-page .profile-hero-card > div > div:first-child > div {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .profile-page .profile-photo-modern {
+    width: 100px;
+    height: 100px;
+    flex: 0 0 100px;
+  }
+
+  .profile-page .profile-hero-card h2 {
+    width: 100%;
+    margin: 0 0 8px;
+    font-size: 1.35rem;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+  }
+
+  .profile-page .profile-hero-card p {
+    width: 100%;
+    margin-bottom: 7px !important;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .profile-page .profile-hero-card > div > div:last-child {
+    width: 100%;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 12px !important;
+  }
+
+  .profile-page .profile-upload {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .profile-page .profile-upload span {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .profile-page .profile-hero-card .btn {
+    width: 100%;
+    min-height: 48px;
+  }
+
+  .profile-page .row {
+    max-width: 100%;
+    margin-right: 0;
+    margin-left: 0;
+  }
+
+  .profile-page .row > [class*="col-"] {
+    width: 100%;
+    max-width: 100%;
+    padding-right: 0;
+    padding-left: 0;
+  }
+
+  .profile-page .tarjeta-suave {
+    width: 100%;
+    max-width: 100%;
+    padding: 18px !important;
+    overflow: hidden;
+  }
+
+  .profile-page input,
+  .profile-page select,
+  .profile-page textarea {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    font-size: 16px;
+  }
+
+  .profile-page .theme-card-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-page .section-title {
+    font-size: 1.25rem;
+  }
+}
