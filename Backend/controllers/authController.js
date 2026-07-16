@@ -39,10 +39,17 @@ const tieneDireccionMinima = (direccion) => {
 const register = async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
-    const roleNormalizado = rolesValidos.includes(role) ? role : "resident";
+
+    const nombreNormalizado = name?.trim();
+    const emailNormalizado = email?.trim().toLowerCase();
+
+    const roleNormalizado = rolesValidos.includes(role)
+      ? role
+      : "resident";
+
     const direccion = normalizarDireccion(req.body);
 
-    if (!name || !email || !password) {
+    if (!nombreNormalizado || !emailNormalizado || !password) {
       return res.status(400).json({
         message: "Completa todos los campos obligatorios",
       });
@@ -50,17 +57,19 @@ const register = async (req, res) => {
 
     if (!tieneDireccionMinima(direccion)) {
       return res.status(400).json({
-        message: "Ingresa al menos un código postal o una dirección válida.",
+        message:
+          "Ingresa al menos un código postal o una dirección válida.",
       });
     }
 
-    if (!emailRegex.test(email)) {
+    if (!emailRegex.test(emailNormalizado)) {
       return res.status(400).json({
         message: "Correo electrónico inválido",
       });
     }
 
-    const validacionPassword = validarPasswordSegura(password);
+    const validacionPassword =
+      validarPasswordSegura(password);
 
     if (!validacionPassword.esValida) {
       return res.status(400).json({
@@ -69,17 +78,26 @@ const register = async (req, res) => {
     }
 
     db.query(
-      "SELECT id FROM usuarios WHERE email = ? LIMIT 1",
-      [email.trim()],
-      async (err, rows) => {
-        if (err) {
-          console.error("Error al validar usuario:", err);
+      `
+        SELECT id
+        FROM usuarios
+        WHERE LOWER(TRIM(email)) = ?
+        LIMIT 1
+      `,
+      [emailNormalizado],
+      (errorBusqueda, usuariosEncontrados) => {
+        if (errorBusqueda) {
+          console.error(
+            "Error al validar usuario:",
+            errorBusqueda
+          );
+
           return res.status(500).json({
             message: "Error al validar usuario",
           });
         }
 
-        if (rows.length > 0) {
+        if (usuariosEncontrados.length > 0) {
           return res.status(400).json({
             message: "El correo ya está registrado",
           });
@@ -87,123 +105,201 @@ const register = async (req, res) => {
 
         const continuarRegistro = async () => {
           try {
-            const hashedPassword = await bcrypt.hash(password, 10);
+            const hashedPassword = await bcrypt.hash(
+              password,
+              10
+            );
 
             let geocoded = null;
-            let warning = null;
+            let locationWarning = null;
 
             try {
               geocoded = await geocodeAddress(direccion);
+
               if (!geocoded) {
-                warning = "Se guardó la dirección, pero no se pudo obtener la ubicación exacta.";
+                locationWarning =
+                  "Se guardó la dirección, pero no se pudo obtener la ubicación exacta.";
               }
             } catch (geoError) {
-              console.error("Error geocodificando dirección de registro:", geoError.message);
-              warning = "Se guardó la dirección, pero no se pudo obtener la ubicación exacta.";
+              console.error(
+                "Error geocodificando dirección:",
+                geoError.message
+              );
+
+              locationWarning =
+                "Se guardó la dirección, pero no se pudo obtener la ubicación exacta.";
             }
+
+            const formattedAddress =
+              geocoded?.formattedAddress ||
+              buildAddressFromParts(direccion) ||
+              null;
 
             const sql = `
               INSERT INTO usuarios
-                (
-                  name, email, password, role, activo, idioma, tema, font_size,
-                  street, ext_number, neighborhood, city, state, postal_code, country,
-                  formatted_address, home_latitude, home_longitude
-                )
+              (
+                name,
+                email,
+                password,
+                role,
+                activo,
+                idioma,
+                tema,
+                font_size,
+                street,
+                ext_number,
+                neighborhood,
+                city,
+                state,
+                postal_code,
+                country,
+                formatted_address,
+                home_latitude,
+                home_longitude
+              )
               VALUES
-                (?, ?, ?, ?, 1, 'es', 'claro', 'medium', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+              (
+                ?, ?, ?, ?, 1, 'es', 'claro', 'medium',
+                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+              )
             `;
 
-            const formattedAddress =
-              geocoded?.formattedAddress || buildAddressFromParts(direccion) || null;
+            const valores = [
+              nombreNormalizado,
+              emailNormalizado,
+              hashedPassword,
+              roleNormalizado,
+              direccion.street,
+              direccion.ext_number,
+              direccion.neighborhood,
+              direccion.city,
+              direccion.state,
+              direccion.postal_code,
+              direccion.country,
+              formattedAddress,
+              geocoded?.latitude ?? null,
+              geocoded?.longitude ?? null,
+            ];
 
             db.query(
               sql,
-              [
-                name.trim(),
-                email.trim(),
-                hashedPassword,
-                roleNormalizado,
-                direccion.street,
-                direccion.ext_number,
-                direccion.neighborhood,
-                direccion.city,
-                direccion.state,
-                direccion.postal_code,
-                direccion.country,
-                formattedAddress,
-                geocoded?.latitude ?? null,
-                geocoded?.longitude ?? null,
-              ],
-              async (error, result) => {
-                if (error) {
-                  console.error("Error al registrar usuario:", error);
+              valores,
+              (errorRegistro, resultado) => {
+                if (errorRegistro) {
+                  console.error(
+                    "Error al registrar usuario:",
+                    errorRegistro
+                  );
+
+                  if (errorRegistro.code === "ER_DUP_ENTRY") {
+                    return res.status(400).json({
+                      message:
+                        "El correo ya está registrado",
+                    });
+                  }
+
                   return res.status(500).json({
-                    message: "Error al registrar usuario",
-                    detail: error.sqlMessage || error.message,
+                    message:
+                      "Error al registrar usuario",
+                    detail:
+                      errorRegistro.sqlMessage ||
+                      errorRegistro.message,
                   });
                 }
 
-                let emailWarning = null;
-
-                try {
-                  await enviarBienvenida({
-                    email: email.trim(),
-                    name: name.trim(),
-                  });
-                } catch (mailError) {
-                  emailWarning =
-                    "Usuario registrado, pero no se pudo enviar el correo de bienvenida.";
-                  console.error("Error enviando correo de bienvenida:", mailError.message);
-                }
-
-                return res.status(201).json({
-                  message: "Usuario registrado correctamente",
-                  userId: result.insertId,
-                  emailWarning,
-                  locationWarning: warning,
+                res.status(201).json({
+                  message:
+                    "Usuario registrado correctamente",
+                  user: {
+                    id: resultado.insertId,
+                    name: nombreNormalizado,
+                    email: emailNormalizado,
+                    role: roleNormalizado,
+                  },
+                  userId: resultado.insertId,
+                  locationWarning,
                 });
+
+                enviarBienvenida({
+                  email: emailNormalizado,
+                  name: nombreNormalizado,
+                })
+                  .then(() => {
+                    console.log(
+                      `Correo de bienvenida enviado a ${emailNormalizado}`
+                    );
+                  })
+                  .catch((mailError) => {
+                    console.error(
+                      "Usuario creado, pero falló el correo de bienvenida:",
+                      mailError.message
+                    );
+                  });
+
+                return;
               }
             );
-          } catch (hashError) {
-            console.error("Error al encriptar contraseña:", hashError);
-            return res.status(500).json({
-              message: "Error interno del servidor",
-            });
+          } catch (errorRegistroInterno) {
+            console.error(
+              "Error interno durante el registro:",
+              errorRegistroInterno
+            );
+
+            if (!res.headersSent) {
+              return res.status(500).json({
+                message: "Error interno del servidor",
+              });
+            }
           }
         };
 
         if (roleNormalizado === "admin") {
           db.query(
-            "SELECT id FROM usuarios WHERE role = 'admin' LIMIT 1",
-            (adminErr, adminRows) => {
-              if (adminErr) {
-                console.error("Error al validar administrador existente:", adminErr);
+            `
+              SELECT id
+              FROM usuarios
+              WHERE role = 'admin'
+              LIMIT 1
+            `,
+            (adminError, administradores) => {
+              if (adminError) {
+                console.error(
+                  "Error al validar administrador:",
+                  adminError
+                );
+
                 return res.status(500).json({
-                  message: "Error al validar administrador",
+                  message:
+                    "Error al validar administrador",
                 });
               }
 
-              if (adminRows.length > 0) {
+              if (administradores.length > 0) {
                 return res.status(403).json({
-                  message: "Ya existe un administrador registrado",
+                  message:
+                    "Ya existe un administrador registrado",
                 });
               }
 
-              return continuarRegistro();
+              continuarRegistro();
+              return;
             }
           );
 
           return;
         }
 
-        return continuarRegistro();
+        continuarRegistro();
       }
     );
   } catch (error) {
     console.error("Error general en register:", error);
-    return res.status(500).json({
-      message: "Error interno del servidor",
-    });
+
+    if (!res.headersSent) {
+      return res.status(500).json({
+        message: "Error interno del servidor",
+      });
+    }
   }
 };
 
