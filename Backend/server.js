@@ -33,21 +33,28 @@ const allowedOrigins = [
   process.env.FRONTEND_URL,
 ].filter(Boolean);
 
+const vercelPreviewPattern =
+  /^https:\/\/circulo-privado(?:-[a-z0-9-]+)*\.vercel\.app$/i;
+
 const corsOptions = {
   origin(origin, callback) {
-    // Permite herramientas sin origen, como Postman y health checks.
+    // Permite Postman, health checks y solicitudes sin navegador.
     if (!origin) {
       return callback(null, true);
     }
 
-    if (allowedOrigins.includes(origin)) {
+    const originPermitido =
+      allowedOrigins.includes(origin) ||
+      vercelPreviewPattern.test(origin);
+
+    if (originPermitido) {
       return callback(null, true);
     }
 
     console.error("Origen bloqueado por CORS:", origin);
 
     return callback(
-      new Error("Origen no autorizado por CORS")
+      new Error(`Origen no autorizado por CORS: ${origin}`)
     );
   },
 
@@ -66,11 +73,11 @@ const corsOptions = {
     "Content-Type",
     "Authorization",
   ],
+
+  optionsSuccessStatus: 204,
 };
 
 app.use(cors(corsOptions));
-
-// Responde correctamente a las solicitudes preflight OPTIONS.
 app.options(/.*/, cors(corsOptions));
 
 /* =========================================================
