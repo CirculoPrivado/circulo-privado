@@ -1,6 +1,14 @@
-* { box-sizing: border-box; }
+/* =========================================================
+   CONFIGURACIÓN GLOBAL
+========================================================= */
 
- :root {
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+:root {
   --app-bg: #f4fbfc;
   --app-bg-soft: #e6fffb;
 
@@ -10,7 +18,6 @@
   --app-text: #274c5e;
   --app-muted: #5f7c89;
 
-  /* Paleta vecinal turquesa */
   --app-primary: #0e7490;
   --app-primary-soft: #d5f6f7;
   --app-secondary: #14b8c4;
@@ -26,14 +33,18 @@
   --app-shadow: 0 12px 30px rgba(39, 76, 94, 0.12);
   --app-shadow-strong: 0 18px 44px rgba(39, 76, 94, 0.18);
 
-  /* Sidebar / navegación */
-  --app-navbar-bg: linear-gradient(180deg, #0e7490 0%, #078091 48%, #066977 100%);
+  --app-navbar-bg: linear-gradient(
+    180deg,
+    #0e7490 0%,
+    #078091 48%,
+    #066977 100%
+  );
+
   --app-navbar-text: #ffffff;
   --app-navbar-pill-bg: rgba(255, 255, 255, 0.12);
   --app-navbar-pill-text: #ffffff;
   --app-navbar-pill-border: rgba(255, 255, 255, 0.34);
 
-  /* Cards / dropdown */
   --app-card-bg: rgba(255, 255, 255, 0.96);
   --app-card-text: #274c5e;
 
@@ -43,6 +54,10 @@
   --app-font-size: 16px;
   --sidebar-width: 280px;
 }
+
+/* =========================================================
+   TEMA OSCURO
+========================================================= */
 
 html[data-theme="oscuro"] {
   --app-bg: #0b1f2a;
@@ -69,7 +84,13 @@ html[data-theme="oscuro"] {
   --app-shadow: 0 18px 42px rgba(0, 0, 0, 0.38);
   --app-shadow-strong: 0 22px 54px rgba(0, 0, 0, 0.48);
 
-  --app-navbar-bg: linear-gradient(180deg, #082f3b 0%, #0c5262 55%, #083642 100%);
+  --app-navbar-bg: linear-gradient(
+    180deg,
+    #082f3b 0%,
+    #0c5262 55%,
+    #083642 100%
+  );
+
   --app-navbar-text: #ffffff;
   --app-navbar-pill-bg: rgba(125, 211, 220, 0.12);
   --app-navbar-pill-text: #effdff;
@@ -81,6 +102,10 @@ html[data-theme="oscuro"] {
   --app-dropdown-bg: rgba(18, 49, 61, 0.98);
   --app-dropdown-text: #effdff;
 }
+
+/* =========================================================
+   ALTO CONTRASTE
+========================================================= */
 
 html[data-theme="contraste"] {
   --app-bg: #000000;
@@ -120,72 +145,263 @@ html[data-theme="contraste"] {
   --app-dropdown-text: #ffffff;
 }
 
-html[data-font-size="small"] { --app-font-size: 14px; }
-html[data-font-size="medium"] { --app-font-size: 16px; }
-html[data-font-size="large"] { --app-font-size: 19px; }
+/* =========================================================
+   TAMAÑO DE FUENTE
+========================================================= */
 
-html, body, #root {
+html[data-font-size="small"] {
+  --app-font-size: 14px;
+}
+
+html[data-font-size="medium"] {
+  --app-font-size: 16px;
+}
+
+html[data-font-size="large"] {
+  --app-font-size: 19px;
+}
+
+/* =========================================================
+   ESTRUCTURA BASE
+========================================================= */
+
+html,
+body,
+#root {
   width: 100%;
+  min-width: 0;
   min-height: 100%;
   margin: 0;
   padding: 0;
 }
 
+html {
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
 body {
+  min-height: 100vh;
+  overflow-x: hidden;
+
   font-family: Arial, Helvetica, sans-serif;
+
   background:
-    radial-gradient(circle at top left, rgba(20, 184, 196, 0.18) 0%, transparent 24%),
-    radial-gradient(circle at top right, rgba(125, 211, 220, 0.22) 0%, transparent 22%),
-    radial-gradient(circle at bottom center, rgba(249, 199, 79, 0.12) 0%, transparent 28%),
-    linear-gradient(180deg, var(--app-bg-soft) 0%, var(--app-bg) 100%);
+    radial-gradient(
+      circle at top left,
+      rgba(20, 184, 196, 0.18) 0%,
+      transparent 24%
+    ),
+    radial-gradient(
+      circle at top right,
+      rgba(125, 211, 220, 0.22) 0%,
+      transparent 22%
+    ),
+    radial-gradient(
+      circle at bottom center,
+      rgba(249, 199, 79, 0.12) 0%,
+      transparent 28%
+    ),
+    linear-gradient(
+      180deg,
+      var(--app-bg-soft) 0%,
+      var(--app-bg) 100%
+    );
+
   color: var(--app-text);
   font-size: var(--app-font-size);
+
   transition:
     background-color 0.25s ease,
     color 0.25s ease,
     font-size 0.2s ease;
 }
 
+#root {
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* =========================================================
+   TEMA OSCURO
+========================================================= */
+
 html[data-theme="oscuro"] body {
   background:
-    radial-gradient(circle at top left, rgba(20, 184, 196, 0.10) 0%, transparent 26%),
-    radial-gradient(circle at top right, rgba(125, 211, 220, 0.08) 0%, transparent 22%),
-    radial-gradient(circle at bottom center, rgba(249, 199, 79, 0.07) 0%, transparent 24%),
-    linear-gradient(180deg, var(--app-bg-soft) 0%, var(--app-bg) 100%);
+    radial-gradient(
+      circle at top left,
+      rgba(20, 184, 196, 0.1) 0%,
+      transparent 26%
+    ),
+    radial-gradient(
+      circle at top right,
+      rgba(125, 211, 220, 0.08) 0%,
+      transparent 22%
+    ),
+    radial-gradient(
+      circle at bottom center,
+      rgba(249, 199, 79, 0.07) 0%,
+      transparent 24%
+    ),
+    linear-gradient(
+      180deg,
+      var(--app-bg-soft) 0%,
+      var(--app-bg) 100%
+    );
 }
 
 html[data-theme="contraste"] body {
   background: #000000;
 }
 
+/* =========================================================
+   ELEMENTOS GENERALES
+========================================================= */
+
 a {
-  text-decoration: none;
   color: inherit;
+  text-decoration: none;
 }
 
-img {
-  max-width: 100%;
+img,
+picture,
+video,
+canvas,
+svg,
+iframe {
   display: block;
+  max-width: 100%;
 }
+
+img,
+picture,
+video {
+  height: auto;
+}
+
+iframe {
+  width: 100%;
+  border: 0;
+}
+
+button,
+input,
+select,
+textarea {
+  max-width: 100%;
+  font: inherit;
+}
+
+input,
+select,
+textarea {
+  min-width: 0;
+}
+
+button {
+  touch-action: manipulation;
+}
+
+table {
+  max-width: 100%;
+}
+
+.container,
+.container-fluid,
+.row,
+.col,
+[class*="col-"] {
+  min-width: 0;
+}
+
+.card,
+.modal-content,
+.dropdown-menu {
+  max-width: 100%;
+}
+
+/* =========================================================
+   MERCADO VECINAL
+========================================================= */
 
 .tarjeta-mercado {
-  overflow: hidden;
+  min-width: 0;
   min-height: 100%;
+  overflow: hidden;
 }
 
 .tarjeta-mercado-img {
+  display: block;
   width: 100%;
   height: 220px;
   object-fit: cover;
-  display: block;
 }
 
 .tarjeta-mercado .btn {
   min-width: 160px;
 }
 
-@media (max-width: 768px) {
+/* =========================================================
+   TABLAS RESPONSIVAS
+========================================================= */
+
+.table-responsive {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* =========================================================
+   CELULARES
+========================================================= */
+
+@media (max-width: 767.98px) {
+  body {
+    font-size: 16px;
+  }
+
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+
+  .container,
+  .container-fluid {
+    width: 100%;
+    max-width: 100%;
+    padding-right: 12px;
+    padding-left: 12px;
+  }
+
   .tarjeta-mercado .btn {
     width: 100%;
+    min-width: 0;
+  }
+
+  .tarjeta-mercado-img {
+    height: 190px;
+  }
+
+  button,
+  .btn {
+    min-height: 44px;
+  }
+}
+
+/* =========================================================
+   PANTALLAS MUY PEQUEÑAS
+========================================================= */
+
+@media (max-width: 380px) {
+  .container,
+  .container-fluid {
+    padding-right: 9px;
+    padding-left: 9px;
+  }
+
+  .tarjeta-mercado-img {
+    height: 170px;
   }
 }

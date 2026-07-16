@@ -21,9 +21,10 @@ SET time_zone = "+00:00";
 -- Base de datos corregida: `circulo_privado_db`
 -- Incluye mejoras para roles, carrito, notificaciones internas e historial.
 --
+"""
 CREATE DATABASE IF NOT EXISTS `circulo_privado_db` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 USE `circulo_privado_db`;
-
+"""
 SET FOREIGN_KEY_CHECKS = 0;
 
 DROP VIEW IF EXISTS `v_resumen_comunidad`;

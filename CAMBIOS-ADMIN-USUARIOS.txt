@@ -1,9 +1,0 @@
-Implementación incluida:
-- Solo permite una cuenta con rol admin al registrarse.
-- Login bloquea acceso a usuarios con activo = 0.
-- Middleware valida sesión con estado y rol actuales en base de datos.
-- Panel de administración para visualizar usuarios registrados.
-- Acciones de administrador: ceder rol admin, bloquear/desbloquear, eliminar usuarios.
-- Ruta frontend protegida solo para admin: /admin/usuarios.
-- Migración SQL incluida: Backend/sql/admin_usuarios_migracion.sql
-- Autoajuste de esquema al iniciar backend para crear columna activo si no existe.
